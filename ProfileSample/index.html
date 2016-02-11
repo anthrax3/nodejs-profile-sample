@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>Node.js performance sample</title>
+<script src="socket.io/socket.io.js"></script>
+<script type="text/javascript">
+function forceCPULoadPeak () {
+	var socket = io.connect('http://127.0.0.1:8888');
+	socket.emit('forceCPULoadPeak');
+}
+
+function forceServerMemoryLeak() {
+	var socket = io.connect('http://127.0.0.1:8888');
+	socket.emit('forceServerMemoryLeak');
+}
+</script>
+</head>
+<body>
+	<button onclick="forceCPULoadPeak();">CPU peak</button>
+	<button onclick="forceServerMemoryLeak();">Memory leak</button>
+</body>
+</html>
