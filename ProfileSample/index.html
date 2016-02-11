@@ -10,14 +10,20 @@ function forceCPULoadPeak () {
 	socket.emit('forceCPULoadPeak');
 }
 
-function forceServerMemoryLeak() {
+function startServerMemoryLeak() {
 	var socket = io.connect('http://127.0.0.1:8888');
-	socket.emit('forceServerMemoryLeak');
+	socket.emit('startServerMemoryLeak');
+}
+
+function stopServerMemoryLeak() {
+	var socket = io.connect('http://127.0.0.1:8888');
+	socket.emit('stopServerMemoryLeak');
 }
 </script>
 </head>
 <body>
-	<button onclick="forceCPULoadPeak();">CPU peak</button>
-	<button onclick="forceServerMemoryLeak();">Memory leak</button>
+	<button onclick="forceCPULoadPeak();">Force server CPU load peak</button>
+	<button onclick="startServerMemoryLeak();">Start server memory leak</button>
+	<button onclick="stopServerMemoryLeak();">Stop server memory leak</button>
 </body>
 </html>

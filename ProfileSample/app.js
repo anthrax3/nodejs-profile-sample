@@ -4,9 +4,9 @@ let http = require('http');
 
 let port = (process.env.PORT || process.env.VCAP_APP_PORT || 8888);
 
-let chocolateBox = [];
+let memoryBlocks = [];
 
-class ChocolateClass {
+class MemoryBlock {
 	constructor () {
 		// Just allocate unnecessary memory
 		this.leak = new Array (500000);
@@ -38,11 +38,20 @@ function startCPUSpike () {
 	randomIntegers = undefined;
 }
 
+var setIntervalId;
+
 function startMemoryLeak () {
-	setInterval (() => {
-		chocolateBox.push (new ChocolateClass());
-		console.log ('Chocolates: %d', chocolateBox.length);
+	setIntervalId = setInterval (() => {
+		memoryBlocks.push (new MemoryBlock());
+		console.log (`Allocated memory blocks: ${memoryBlocks.length}`);
 	}, 1000);
+}
+
+function stopMemoryLeak () {
+	if (setIntervalId !== undefined) {
+		clearInterval(setIntervalId);
+		setIntervalId = undefined;
+	}
 }
 
 io.sockets.on('connection', socket => {
@@ -51,9 +60,14 @@ io.sockets.on('connection', socket => {
     	startCPUSpike ();
     });
     
-    socket.on('forceServerMemoryLeak', msg => {
-    	console.error ('About to start a memory leak');
+    socket.on('startServerMemoryLeak', msg => {
+    	console.error ('About to start server memory leak');
     	startMemoryLeak ();
+    });
+    
+    socket.on('stopServerMemoryLeak', msg => {
+    	console.error ('About to stop server memory leak');
+    	stopMemoryLeak ();
     });
 });
 
