@@ -15,7 +15,7 @@ class ChocolateClass {
 
 let html = require ('fs').readFileSync('./index.html');
 
-let server = http.createServer(function(request, response) {  
+let server = http.createServer((request, response) => {  
 	response.writeHeader(200, {"Content-Type": "text/html"});
     response.write(html);  
     response.end();  
@@ -45,13 +45,13 @@ function startMemoryLeak () {
 	}, 1000);
 }
 
-io.sockets.on('connection', function (socket) {
-    socket.on('forceCPULoadPeak', function (msg) {
+io.sockets.on('connection', socket => {
+    socket.on('forceCPULoadPeak', msg => {
     	console.error ('About to cause a CPU usage spike');
     	startCPUSpike ();
     });
     
-    socket.on('forceServerMemoryLeak', function (msg) {
+    socket.on('forceServerMemoryLeak', msg => {
     	console.error ('About to start a memory leak');
     	startMemoryLeak ();
     });
