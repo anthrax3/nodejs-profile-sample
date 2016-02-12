@@ -15,10 +15,23 @@ class MemoryBlock {
 
 let html = require ('fs').readFileSync('./index.html');
 
-let server = http.createServer((request, response) => {  
+let server = http.createServer((request, response) => {
 	response.writeHeader(200, {"Content-Type": "text/html"});
-    response.write(html);  
-    response.end();  
+	if (request.url === '/') {
+	    response.write(html);  
+	    response.end();  	
+	} else if (request.url === '/delay') {
+		const MIN_DELAY = 3000;
+		const MAX_DELAY = 10000;
+		// "Sleep" randomly before replying
+		var now = new Date().getTime();
+		let delay = Math.floor(Math.random() * MAX_DELAY) + MIN_DELAY;
+		
+		console.log (`Delaying response for ${delay} milliseconds`);
+	    while(new Date().getTime() < now + delay) 
+	    { /* do nothing */ }
+	}
+	response.end();
 });
 
 let io = require('socket.io')(server);

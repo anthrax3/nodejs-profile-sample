@@ -24,6 +24,22 @@ function pauseServerMemoryLeak() {
 function clearServerMemoryLeak() {
 	socket.emit('clearServerMemoryLeak');
 }
+
+function httpGetAsync(theUrl, callback)
+{
+    var xmlHttp = new XMLHttpRequest();
+    xmlHttp.onreadystatechange = () => { 
+        if (xmlHttp.readyState === 4 && xmlHttp.status === 200) {
+            callback(xmlHttp.responseText);
+        }
+    };
+    xmlHttp.open('GET', theUrl, true); // true for asynchronous 
+    xmlHttp.send(null);
+}
+
+function httpGetCallback () {
+	alert ('HTTP response received');	
+}
 </script>
 </head>
 <body>
@@ -38,6 +54,11 @@ function clearServerMemoryLeak() {
 		<button onclick="startServerMemoryLeak();" class="btn btn-lg btn-danger">Start/Resume memory leak</button>
 		<button onclick="pauseServerMemoryLeak();" class="btn btn-lg btn-primary">Pause memory leak</button>
 		<button onclick="clearServerMemoryLeak();" class="btn btn-lg btn-success">Clear server memory leak</button>
+	</div>
+	
+	<div>
+		<h2>HTTP Request</h2>
+		<button onclick="httpGetAsync('http://127.0.0.1:8888/delay', httpGetCallback);" class="btn btn-lg btn-warning">Make long running request</button>
 	</div>
 </body>
 </html>
