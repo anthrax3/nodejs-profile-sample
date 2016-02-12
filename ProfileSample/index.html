@@ -2,28 +2,42 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<title>Node.js performance sample</title>
+<title>Node.js Profile Sample</title>
+<link rel="stylesheet" 
+	href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
 <script src="socket.io/socket.io.js"></script>
 <script type="text/javascript">
+var socket = io.connect('http://127.0.0.1:8888');
+
 function forceCPULoadPeak () {
-	var socket = io.connect('http://127.0.0.1:8888');
 	socket.emit('forceCPULoadPeak');
 }
 
 function startServerMemoryLeak() {
-	var socket = io.connect('http://127.0.0.1:8888');
 	socket.emit('startServerMemoryLeak');
 }
 
-function stopServerMemoryLeak() {
-	var socket = io.connect('http://127.0.0.1:8888');
-	socket.emit('stopServerMemoryLeak');
+function pauseServerMemoryLeak() {
+	socket.emit('pauseServerMemoryLeak');
+}
+
+function clearServerMemoryLeak() {
+	socket.emit('clearServerMemoryLeak');
 }
 </script>
 </head>
 <body>
-	<button onclick="forceCPULoadPeak();">Force server CPU load peak</button>
-	<button onclick="startServerMemoryLeak();">Start server memory leak</button>
-	<button onclick="stopServerMemoryLeak();">Stop server memory leak</button>
+	<h1>Server resources consumer</h1>
+	<div>
+		<h2>Server CPU</h2>
+		<button onclick="forceCPULoadPeak();" class="btn btn-lg btn-warning">Force load peak</button>
+	</div>
+	
+	<div>
+		<h2>Server Memory</h2>
+		<button onclick="startServerMemoryLeak();" class="btn btn-lg btn-danger">Start/Resume memory leak</button>
+		<button onclick="pauseServerMemoryLeak();" class="btn btn-lg btn-primary">Pause memory leak</button>
+		<button onclick="clearServerMemoryLeak();" class="btn btn-lg btn-success">Clear server memory leak</button>
+	</div>
 </body>
 </html>

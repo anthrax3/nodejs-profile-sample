@@ -41,33 +41,49 @@ function startCPUSpike () {
 var setIntervalId;
 
 function startMemoryLeak () {
+	// If not undefined, this is currently 
+	// running -> do nothing
+	if (setIntervalId !== undefined) {
+		return;
+	}
+	
 	setIntervalId = setInterval (() => {
 		memoryBlocks.push (new MemoryBlock());
 		console.log (`Allocated memory blocks: ${memoryBlocks.length}`);
 	}, 1000);
 }
 
-function stopMemoryLeak () {
+function pauseMemoryLeak () {
 	if (setIntervalId !== undefined) {
 		clearInterval(setIntervalId);
 		setIntervalId = undefined;
 	}
 }
 
+function clearMemoryLeak () {
+	pauseMemoryLeak();
+	memoryBlocks = []; // Revert to an empty array
+}
+
 io.sockets.on('connection', socket => {
     socket.on('forceCPULoadPeak', msg => {
-    	console.error ('About to cause a CPU usage spike');
+    	console.error ('Forcing a CPU usage spike');
     	startCPUSpike ();
     });
     
     socket.on('startServerMemoryLeak', msg => {
-    	console.error ('About to start server memory leak');
+    	console.error ('Starting server memory leak');
     	startMemoryLeak ();
     });
     
-    socket.on('stopServerMemoryLeak', msg => {
-    	console.error ('About to stop server memory leak');
-    	stopMemoryLeak ();
+    socket.on('pauseServerMemoryLeak', msg => {
+    	console.error ('Pausing server memory leak');
+    	pauseMemoryLeak ();
+    });
+    
+    socket.on('clearServerMemoryLeak', msg => {
+    	console.error ('Clearing server memory leak');
+    	clearMemoryLeak ();
     });
 });
 
